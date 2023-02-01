@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <select id="categorias">
+
+        </select>
+        <button id="btnPedir">Get Chuck</button>
+
+        <div id="caja"> </div>
+        <script>
+            fetch('https://api.chucknorris.io/jokes/categories')
+                .then(respuesta=>respuesta.json())
+                    .then(function(dato){
+                        
+                        //for(i=0; i< dato.length; i++) {
+                        //    console.log(dato[i]);
+
+                        //    let opcion = document.createElement('option');
+                        //    opcion.value=dato[i];
+                        //   opcion.text=dato[i];
+                        //    document.getElementById('categorias').appendChild(opcion);
+                        //}
+
+                        dato.forEach(elemento => {
+                            let opcion = document.createElement('option');
+                            opcion.value=elemento;
+                            opcion.text=elemento;
+                            document.getElementById('categorias').appendChild(opcion);
+                        });
+                    })
+            document.getElementById('btnPedir').addEventListener('click',function() {
+                let seleccion= document.getElementById('categorias').value;
+                let peticion= 'https://api.chucknorris.io/jokes/random?category='+seleccion;
+
+                fetch(peticion)
+                    .then(response=>response.json())
+                        .then(function(dato) {
+                            document.getElementById('caja').innerText=dato.value;
+                        })
+            })
+        </script>
+    </body>
+</html>
