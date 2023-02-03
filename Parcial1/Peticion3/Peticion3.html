@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Peticiones con parametros de ruta (PATH)</title>
+    </head>
+    <body>
+        <select id="razas">
+
+        </select>
+        <button id="btnPedir">GetBreed</button>
+
+        <div id="caja"> </div>
+        <script>
+            fetch('https://dogapi.dog/api/v2/breeds')
+                .then(respuesta=>respuesta.json())
+                    .then(function(dato){
+                        console.log(dato.data);
+                    
+                        dato.data.forEach(elemento => {
+                             let opcion = document.createElement('option');
+                             opcion.value=elemento.id;
+                             opcion.text=elemento.attributes.name;
+                             document.getElementById('razas').appendChild(opcion);
+                         });     
+                
+                document.getElementById('btnPedir').addEventListener('click',function() {
+                let seleccion= document.getElementById('razas').value;
+                let peticion= 'https://dogapi.dog/api/v2/breeds/'+seleccion;
+
+                fetch(peticion)
+                    .then(response=>response.json())
+                        .then(function(dato) {
+                            console.log(dato)
+                            document.getElementById('caja').innerText=dato.data.attributes.description;
+                        })
+                })  
+            })
+        </script>
+    </body>
+</html>
