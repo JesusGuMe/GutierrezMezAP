@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peticiones HTTP</title>
+    <script src="./jquery-3.6.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    
+    <button id="btnFetch">Fetch</button>
+    <button id="btnAsyncAwait">AsyncAwait</button>
+    <button id="btn_PeticionXmlHttpReq">XmlHttpRequest</button>
+    <button id="btnJquery">jquery</button>
+    <button id="btnAxios">axios</button>
+
+    <img id="imagen" style="display: block;">
+    
+    <script>
+        // La API usada se llama FAKE STORE API 
+        // URL: https://fakestoreapi.com/docs
+
+        document.getElementById('btnFetch').addEventListener('click',()=>{
+            fetch('https://fakestoreapi.com/products/1')
+                .then((res)=>res.json())
+                .then((data)=> {
+                    console.log(data)
+                    document.getElementById('imagen').src=data.image
+                })
+        })
+
+        document.getElementById('btnAsyncAwait').addEventListener('click',async()=>{
+            let res= await  fetch('https://fakestoreapi.com/products/2')
+            let data = await res.json()
+            document.getElementById('imagen').src=data.image
+
+        })
+
+        document.getElementById('btn_PeticionXmlHttpReq').addEventListener('click',()=>{
+            const xhr = new XMLHttpRequest()
+            xhr.open('GET','https://fakestoreapi.com/products/3')
+            xhr.onreadystatechange = ()=>{
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status ===200){
+                    let res = JSON.parse(xhr.responseText)
+                    document.getElementById('imagen').src=res.image
+                }
+            }
+            xhr.send()
+        })
+
+        document.getElementById('btnJquery').addEventListener('click',()=>{
+            $.ajax({
+                type:'GET',
+                url: 'https://fakestoreapi.com/products/4',
+                contentType: 'application/json',
+                async: true,
+                success: (data)=> {
+                    document.getElementById('imagen').src=data.image   
+                }
+            })
+        })
+
+        document.getElementById('btnAxios').addEventListener('click',()=>{
+            axios.get('https://fakestoreapi.com/products/5')
+            .then(res=>{
+                document.getElementById('imagen').src=res.data.image
+            })
+        })
+    </script>
+</body>
+
+</html>
