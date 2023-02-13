@@ -6,7 +6,7 @@ app.use(express.text())
 
 app.get('/alumnos/:carrera', (req,res) => {
     //console.log(req.params.carrera)
-    res.json({alumnos:"Alumnos de la carrera de "+req.params.carrera})
+    res.jsonp({alumnos:"Alumnos de la carrera de "+req.params.carrera})
 })
 
 app.get('/maestros', (req,res) => {

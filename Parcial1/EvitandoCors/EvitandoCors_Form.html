@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Evitando el Cors</title>
+    </head>
+    <body>
+        <form target="resultado" method="get" action="http://localhost:8082/alumnos/sistemas">
+            <button id="btn1" type="submit">PeticionFormulario</button>
+            <button id="btn2" type="button">PeticionFetch</button>
+        </form>
+        <iframe name= "resultado"></iframe>
+
+        <script>
+            document.getElementById("btn2").addEventListener("click", ()=> {
+                fetch('http://localhost:8082/alumnos/sistemas')
+                .then(respuesta=>respuesta.json())
+                    .then(dato=>console.log(dato))
+            })
+            
+        </script>
+    </body>
+</html>
