@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
 
@@ -8,6 +10,10 @@ app.use(express.json())
 app.use(express.text())
 app.use(cors())
 app.use(morgan('tiny'))
+
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
+
+app.use(morgan('combined', { stream: accessLogStream }))
 
 app.get('/alumnos/:carrera', (req,res) => {
     //console.log(req.params.carrera)

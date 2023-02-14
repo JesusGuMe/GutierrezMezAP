@@ -1,0 +1,4 @@
+::ffff:127.0.0.1 - - [14/Feb/2023:14:57:12 +0000] "GET /alumnos/sistemas/ HTTP/1.1" 200 47 "-" "Thunder Client (https://www.thunderclient.com)"
+::ffff:127.0.0.1 - - [14/Feb/2023:14:57:18 +0000] "POST /administrativos HTTP/1.1" 200 56 "-" "Thunder Client (https://www.thunderclient.com)"
+::ffff:127.0.0.1 - - [14/Feb/2023:14:58:06 +0000] "POST /administrativos HTTP/1.1" 200 56 "-" "Thunder Client (https://www.thunderclient.com)"
+::ffff:127.0.0.1 - - [14/Feb/2023:14:58:11 +0000] "GET /alumnos/sistemas/ HTTP/1.1" 200 47 "-" "Thunder Client (https://www.thunderclient.com)"
