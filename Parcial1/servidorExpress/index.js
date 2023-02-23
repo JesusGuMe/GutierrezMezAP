@@ -11,6 +11,8 @@ app.use(express.text())
 app.use(cors())
 app.use(morgan('tiny'))
 
+//const accessLogStream = fs.createReadStream(path.join(__dirname, 'access.log'), { flags: 'a' })
+
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
 
 app.use(morgan('combined', { stream: accessLogStream }))
