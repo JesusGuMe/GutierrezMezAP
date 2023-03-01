@@ -27,10 +27,10 @@ app.post('/usuario/', async(req,res) => {
     const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'prueba_api'});
     const [rows, fields] = await connection.execute(secuenciasql);
     if(rows.affectedRows == 1) {
-        res.json({status: "Insercion realizada con exito"});
+        res.status(200).send( "Insercion realizada con exito");
     }
     else {
-        res.json({registros: "No se ha podido agregar el registro"});
+        res.status(500).send("No se ha podido insertar el usuario");
     }
 });
 
@@ -38,21 +38,32 @@ app.delete('/usuario/:id', async(req,res) => {
     const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'prueba_api'});
     const [rows, fields] = await connection.execute('DELETE FROM `usuario` WHERE `id` = ?', [req.params.id]);
     if(rows.affectedRows == 1) {
-        res.json({status: "Registro Eliminado con exito"});
+        res.send("Registro Eliminado con exito");
     } else {
-        res.json({registros: "No se ha encontrado el registro a Eliminar"});
+        res.send("No se ha encontrado el registro a Eliminar");
     }
 })
 
-app.patch('/usuario/', async(req,res) => {
-    let secuenciasql = `UPDATE usuario SET id = ${req.body.id}, nombre ='${req.body.nombre}', edad = ${req.body.edad}, semestre = ${req.body.semestre} WHERE id = ${req.body.id}`;
+app.put('/usuario/', async(req,res) => {
+    let secuenciasql = `UPDATE usuario SET nombre ='${req.body.nombre}', edad = ${req.body.edad}, semestre = ${req.body.semestre} WHERE id = ${req.body.id}`;
     const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'prueba_api'});
     const [rows, fields] = await connection.execute(secuenciasql);
     if(rows.affectedRows == 1) {
-        res.json({status: "Actualización realizada con exito"});
+        res.status(200).send( "Modificación realizada con exito");
     }
     else {
-        res.json({registros: "No se ha encontrado el registro a Actualizar"});
+        res.status(500).send("No se ha encontrado el registro a Modificar");
+    }
+});
+
+app.patch('/usuario/:id', async(req,res) => {
+    const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'prueba_api'});
+    const [rows, fields] = await connection.execute(`UPDATE usuario SET nombre ='${req.body.nombre}', edad = ${req.body.edad}, semestre = ${req.body.semestre} WHERE id = ?`,[req.params.id]);
+    if(rows.affectedRows == 1) {
+        res.status(200).send( "Actualización realizada con exito");
+    }
+    else {
+        res.status(500).send("No se ha encontrado el registro a Actualizar");
     }
 });
 
