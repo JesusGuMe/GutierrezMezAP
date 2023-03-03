@@ -15,3 +15,9 @@ leer.on('data', function (chunk) {
   console.log("Se ha creado una copia del archivo Lorem");
  
 });
+
+leer.on('error', function (error) {
+  console.log(`Ocurrio un Error: ${error.message}`);
+  console.log('')
+  console.log(error)
+})
