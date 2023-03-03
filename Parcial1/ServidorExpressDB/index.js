@@ -1,10 +1,11 @@
 const express = require('express');
 const mysql = require('mysql2/promise');
-
+const cors = require('cors')
 const app = express();
 
 app.use(express.json())
 app.use(express.text())
+app.use(cors())
 
 app.get('/usuario/', async(req,res) => {
     const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'prueba_api'});
