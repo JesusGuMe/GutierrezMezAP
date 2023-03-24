@@ -10,8 +10,6 @@ app.post('/login', (req, res) => {
     var token = jsonwebtoken.sign(req.body, 'claveSecreta');
     console.log(token);
     res.json({token});
-    // res.json({respuesta: "Petición post al login con express"});
-
 })
 
 app.get('/sistema', verificarToken, function(req, res, next) {
