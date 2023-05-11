@@ -4,17 +4,29 @@ const cors = require('cors')
 const app = express();
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
+const { SwaggerTheme } = require('swagger-themes');
 const path = require('path');
 const fs = require('fs')
+const redoc = require('redoc-express');
+
 app.use(express.json())
 app.use(express.text())
 app.use(cors())
+
+const theme = new SwaggerTheme('v3');
+
+const themeoptions = {
+    explorer: true,
+    customCss: theme.getBuffer('outline')
+};
 
 let contenidoReadme = fs.readFileSync(path.join(__dirname)+ '/README.md', {encoding:'utf-8', flag: 'r'});
 let apidef_string = fs.readFileSync(path.join(__dirname)+ '/apidef.json', {encoding:'utf-8', flag: 'r'});
 let apidef_objeto = JSON.parse(apidef_string);
 apidef_objeto.info.description = contenidoReadme
 
+let redocTheme_string = fs.readFileSync(path.join(__dirname)+ '/redocTheme.json', {encoding:'utf-8', flag: 'r'});
+let redocTheme_objeto = JSON.parse(redocTheme_string);
 const swaggerOptions = {
     definition: apidef_objeto,
     apis: [`${path.join(__dirname,"./index.js")}`],
@@ -166,10 +178,24 @@ app.patch('/usuario/', async(req,res) => {
 });
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use("/docs",swaggerUI.serve,swaggerUI.setup(swaggerDocs));
+app.use("/docs",swaggerUI.serve,swaggerUI.setup(swaggerDocs, themeoptions));
+
 app.get("/docs.json", (req,res) => {
         res.json(swaggerDocs);
 })
+
+app.get('/redocs', redoc({
+        title: 'API Docs',
+        specUrl: '/docs.json',
+        nonce: '', // <= it is optional,we can omit this key and value
+        // we are now start supporting the redocOptions object
+        // you can omit the options object if you don't need it
+        // https://redocly.com/docs/api-reference-docs/configuration/functionality/
+        redocOptions: {
+            theme: { redocTheme_objeto }
+        }
+    })
+);
 
 app.use((req,res) => {
     res.status(404).json({estado: "Pagina o Ruta No Encontrada"})
