@@ -1,0 +1,9 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API de Usuarios de Universidad",
+        "version": "1.0.0",
+        "description": "Descripción de la API esta en el archivo de README.MD"},
+    "tags": [{"name": "usuario", "description": "Catalogo de usuarios"}],
+    "servers": [{"url": "http://localhost:8082"}]
+}

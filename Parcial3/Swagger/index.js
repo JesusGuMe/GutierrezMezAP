@@ -5,39 +5,61 @@ const app = express();
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 const path = require('path');
-
+const fs = require('fs')
 app.use(express.json())
 app.use(express.text())
 app.use(cors())
 
+let contenidoReadme = fs.readFileSync(path.join(__dirname)+ '/README.md', {encoding:'utf-8', flag: 'r'});
+let apidef_string = fs.readFileSync(path.join(__dirname)+ '/apidef.json', {encoding:'utf-8', flag: 'r'});
+let apidef_objeto = JSON.parse(apidef_string);
+apidef_objeto.info.description = contenidoReadme
+
 const swaggerOptions = {
-    definition: {
-        openapi: '3.0.0',
-        info: {
-            title: 'API de Usuarios de Universidad',
-            version: '1.0.0',
-            },
-        servers:[
-            {url: "http://localhost:8082"}
-            ], 
-        },
+    definition: apidef_objeto,
     apis: [`${path.join(__dirname,"./index.js")}`],
     };
 
 /**
  * @swagger
- * /usuario:
+ * /usuario/:
  *  get:
- *      description: Petición Get a la ruta de Usuarios
- *      responses:
- *          200:
- *              description: Regresa un Json con todos los usuarios registrados.
+ *    tags:
+ *      - usuario
+ *    summary: Consultar todos los usuarios
+ *    description: Petición Get a la ruta de Usuarios
+ *    responses:
+ *      200:
+ *        description: Regresa un Json con todos los usuarios registrados.
  */
 app.get('/usuario/', async(req,res) => {
     const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'prueba_api'});
     const [rows, fields] = await connection.execute('SELECT * FROM `usuario`');
     res.json(rows);
 })
+
+/**
+ * @swagger
+ * /usuario/{id}:
+ *  get:
+ *    tags:
+ *      - usuario
+ *    summary: Consultar un usuario en especifico por su ID
+ *    description: Petición Get a la ruta de Usuarios donde pedira un id
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        description: ID del usuario a consultar
+ *        required: true
+ *        schema:
+ *          type: integer
+ *          format: int64  
+ *    responses:
+ *      200:
+ *        description: Regresa un Json con del usuario en especifico del cual se le solicito su ID.
+ *      400:
+ *        description: ID INVALIDO.
+ */
 
 app.get('/usuario/:id', async(req,res) => {
     const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'prueba_api'});
@@ -49,8 +71,27 @@ app.get('/usuario/:id', async(req,res) => {
     }
 })
 
+/**
+ * @swagger
+ * /usuario/:
+ *   post:
+ *     tags:
+ *       - usuario
+ *     summary: Registrar un usuario
+ *     description: Petición Post a la ruta de Usuarios
+ *     requestBody:
+ *       description: Crea un nuevo usuario
+ *       content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/usuario'
+ *     responses:
+ *       200:
+ *         description: Status de la operación de inserción de un nuevo usuario.
+ */
+
 app.post('/usuario/', async(req,res) => {
-    let secuenciasql = `insert into usuario values(${req.body.id}, '${req.body.nombre}', ${req.body.edad}, ${req.body.semestre})`;
+    let secuenciasql = `insert into usuario values(${req.body.id}, '${req.body.nombre}', ${req.body.edad}, ${req.body.semestre}, '${req.body.login}', '${req.body.password}')`;
     const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'prueba_api'});
     const [rows, fields] = await connection.execute(secuenciasql);
     if(rows.affectedRows == 1) {
@@ -60,6 +101,27 @@ app.post('/usuario/', async(req,res) => {
         res.json({registros: "No se ha podido agregar el registro"});
     }
 });
+
+/**
+ * @swagger
+ * /usuario/{id}:
+ *   delete:
+ *     tags:
+ *       - usuario
+ *     summary: Se borra un usuario
+ *     description: Petición Delete a la ruta de Usuarios para borrar un usuario.
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: ID del usuario a ELIMINAR
+ *         required: true
+ *         schema:
+ *          type: integer
+ *          format: int64  
+ *     responses:
+ *       200:
+ *         description: Status exitoso de la operación de eliminación de un usuario.
+ */
 
 app.delete('/usuario/:id', async(req,res) => {
     const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'prueba_api'});
@@ -71,8 +133,28 @@ app.delete('/usuario/:id', async(req,res) => {
     }
 })
 
+/**
+ * @swagger
+ * /usuario/:
+ *  patch:
+ *    tags:
+ *      - usuario
+ *    summary: Actualizar usuario
+ *    description: Petición Patch a la ruta de Usuarios
+ *    requestBody:
+ *       description: Crea un nuevo usuario
+ *       content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/usuario'
+ *       required: true
+ *    responses:
+ *      200:
+ *        description: Regresa un mensaje de operación de la modificación exitosa.
+ */
+
 app.patch('/usuario/', async(req,res) => {
-    let secuenciasql = `UPDATE usuario SET id = ${req.body.id}, nombre ='${req.body.nombre}', edad = ${req.body.edad}, semestre = ${req.body.semestre} WHERE id = ${req.body.id}`;
+    let secuenciasql = `UPDATE usuario SET id = ${req.body.id}, nombre ='${req.body.nombre}', edad = ${req.body.edad}, semestre = ${req.body.semestre}, login = '${req.body.login}', password = '${req.body.password}' WHERE id = ${req.body.id}`;
     const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'prueba_api'});
     const [rows, fields] = await connection.execute(secuenciasql);
     if(rows.affectedRows == 1) {
@@ -84,8 +166,10 @@ app.patch('/usuario/', async(req,res) => {
 });
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use("/api-docs",swaggerUI.serve,swaggerUI.setup(swaggerDocs));
-
+app.use("/docs",swaggerUI.serve,swaggerUI.setup(swaggerDocs));
+app.get("/docs.json", (req,res) => {
+        res.json(swaggerDocs);
+})
 
 app.use((req,res) => {
     res.status(404).json({estado: "Pagina o Ruta No Encontrada"})
@@ -94,3 +178,38 @@ app.use((req,res) => {
 app.listen(8082,()=> {
     console.log("Servidor express corriendo y escuchando en el puerto 8082")
 })
+
+/**
+ * @swagger
+ * 
+ * components:
+ *   schemas:
+ *     usuario: 
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: smallint
+ *           description: Identificador del usuario    
+ *           example: 5 
+ *         nombre:
+ *           type: string
+ *           description: Nombre del usuario
+ *           example: Jesús    
+ *         edad:
+ *           type: int
+ *           description: Edad del usuario   
+ *           example: 18  
+ *         semestre:
+ *           type: int
+ *           description: Semestre del usuario    
+ *           example: 7 
+ *         login:
+ *           type: string
+ *           description: Login de acceso   
+ *           example: Jesús125 
+ *         password:
+ *           type: smallint
+ *           description: Clave de Acceso    
+ *           example: Jesús123 
+ *       
+ */
