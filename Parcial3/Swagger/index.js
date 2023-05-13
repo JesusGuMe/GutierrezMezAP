@@ -42,7 +42,14 @@ const swaggerOptions = {
  *    description: Petición Get a la ruta de Usuarios
  *    responses:
  *      200:
- *        description: Regresa un Json con todos los usuarios registrados.
+ *        description: Regresa un arreglo/array con todos los usuarios registrados.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/usuario'   
+ *          application/xml:
+ *            schema:
+ *              $ref: '#/components/schemas/usuario'   
  */
 app.get('/usuario/', async(req,res) => {
     const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'prueba_api'});
@@ -58,6 +65,8 @@ app.get('/usuario/', async(req,res) => {
  *      - usuario
  *    summary: Consultar un usuario en especifico por su ID
  *    description: Petición Get a la ruta de Usuarios donde pedira un id
+ *    produces:
+ *      - application/json
  *    parameters:
  *      - name: id
  *        in: path
@@ -68,9 +77,18 @@ app.get('/usuario/', async(req,res) => {
  *          format: int64  
  *    responses:
  *      200:
- *        description: Regresa un Json con del usuario en especifico del cual se le solicito su ID.
+ *        description: Regresa la información del usuario en especifico.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/usuario'   
+ *          application/xml:
+ *            schema:
+ *              $ref: '#/components/schemas/usuario'
  *      400:
- *        description: ID INVALIDO.
+ *         description: ID invalido.
+ *      404:
+ *         description: ID no encontrado.
  */
 
 app.get('/usuario/:id', async(req,res) => {
@@ -97,9 +115,24 @@ app.get('/usuario/:id', async(req,res) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/usuario'
+ *           application/xml:
+ *            schema:
+ *              $ref: '#/components/schemas/usuario'
+ *           application/x-www-form-urlencoded:
+ *             schema:
+ *               $ref: '#/components/schemas/usuario'
  *     responses:
  *       200:
  *         description: Status de la operación de inserción de un nuevo usuario.
+ *         content:
+ *           application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/usuario'   
+ *           application/xml:
+ *            schema:
+ *              $ref: '#/components/schemas/usuario'  
+ *       405:
+ *         description: Input Invalido.
  */
 
 app.post('/usuario/', async(req,res) => {
@@ -133,6 +166,10 @@ app.post('/usuario/', async(req,res) => {
  *     responses:
  *       200:
  *         description: Status exitoso de la operación de eliminación de un usuario.
+ *       400:
+ *         description: ID invalido.
+ *       404:
+ *         description: ID no encontrado.
  */
 
 app.delete('/usuario/:id', async(req,res) => {
@@ -159,10 +196,24 @@ app.delete('/usuario/:id', async(req,res) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/usuario'
+ *           application/xml:
+ *            schema:
+ *              $ref: '#/components/schemas/usuario'
+ *           application/x-www-form-urlencoded:
+ *             schema:
+ *               $ref: '#/components/schemas/usuario'
  *       required: true
  *    responses:
  *      200:
  *        description: Regresa un mensaje de operación de la modificación exitosa.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/usuario'   
+ *          application/xml:
+ *            schema:
+ *              $ref: '#/components/schemas/usuario'  
+ *      
  */
 
 app.patch('/usuario/', async(req,res) => {
@@ -207,7 +258,6 @@ app.listen(8082,()=> {
 
 /**
  * @swagger
- * 
  * components:
  *   schemas:
  *     usuario: 
