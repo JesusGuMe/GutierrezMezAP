@@ -46,7 +46,9 @@ const swaggerOptions = {
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/usuario'   
+ *              type: array
+ *              items:
+ *                $ref: '#/components/schemas/usuario'   
  *          application/xml:
  *            schema:
  *              $ref: '#/components/schemas/usuario'   
@@ -81,6 +83,7 @@ app.get('/usuario/', async(req,res) => {
  *        content:
  *          application/json:
  *            schema:
+ *              type: json
  *              $ref: '#/components/schemas/usuario'   
  *          application/xml:
  *            schema:
