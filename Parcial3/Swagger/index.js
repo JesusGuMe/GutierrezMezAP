@@ -118,12 +118,6 @@ app.get('/usuario/:id', async(req,res) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/usuario'
- *           application/xml:
- *            schema:
- *              $ref: '#/components/schemas/usuario'
- *           application/x-www-form-urlencoded:
- *             schema:
- *               $ref: '#/components/schemas/usuario'
  *     responses:
  *       200:
  *         description: Status de la operación de inserción de un nuevo usuario.
@@ -194,15 +188,9 @@ app.delete('/usuario/:id', async(req,res) => {
  *    summary: Actualizar usuario
  *    description: Petición Patch a la ruta de Usuarios
  *    requestBody:
- *       description: Crea un nuevo usuario
+ *       description: Actualiza un usuario existente
  *       content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/usuario'
- *           application/xml:
- *            schema:
- *              $ref: '#/components/schemas/usuario'
- *           application/x-www-form-urlencoded:
  *             schema:
  *               $ref: '#/components/schemas/usuario'
  *       required: true
