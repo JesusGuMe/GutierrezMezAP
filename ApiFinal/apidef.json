@@ -1,0 +1,9 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API de Obras de Teatro",
+        "version": "1.0.0",
+        "description": "Descripción de la API esta en el archivo de README.MD"},
+    "tags": [{"name": "obras", "description": "Catalogo de obras de Teatro"}],
+    "servers": [{"url": "https://apiteatro-production.up.railway.app"}]
+}
